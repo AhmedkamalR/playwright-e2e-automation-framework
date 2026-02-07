@@ -1,9 +1,13 @@
-import { Page } from "@playwright/test";
+import { APIRequestContext, Page } from "@playwright/test";
+import TodoApi from "../apis/TodoApi";
+import User from "../models/User";
 
 export default class NewTodoPage {
   private page: Page;
-  constructor(page: Page) {
+  private request: APIRequestContext;
+  constructor(page: Page, request: APIRequestContext) {
     this.page = page;
+    this.request = request;
   }
   private get newTodoInput() {
     return '[data-testid="new-todo"]';
@@ -20,5 +24,10 @@ export default class NewTodoPage {
  async addNewTask(todo: string) {
     await this.page.fill(this.newTodoInput, todo);
     await this.page.click(this.newTodoSubmit);
+  }
+
+  async addNewTaskUsingApi(user: User){
+      await new TodoApi(this.request).addTodo(user);
+    
   }
 }
