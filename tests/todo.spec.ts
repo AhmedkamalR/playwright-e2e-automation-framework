@@ -1,19 +1,13 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import User from '../models/User';
+import UserApi from '../apis/UserApi';
 
 test('should be able to add a todo', async ({ page, request, context }) => {
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
   //Register using API
-  const response = await request.post('/api/v1/users/register', {
-    data: {
-      firstName: user.getFirstName(),
-      lastName: user.getLastName(),
-      email: user.getEmail(),
-      password: user.getPassword(),
-    },
-  });
+  const response = await new UserApi(request).register(user);
 
   const responseBody = await response.json();
 
@@ -51,14 +45,8 @@ test('should be able to add a todo', async ({ page, request, context }) => {
 test('should be able to delete a todo', async ({ page, request, context }) => {
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
-  const response = await request.post('/api/v1/users/register', {
-    data: {
-      firstName: user.getFirstName(),
-      lastName: user.getLastName(),
-      email: user.getEmail(),
-      password: user.getPassword(),
-    },
-  });
+  const response = await new UserApi(request).register(user);
+
 
   const responseBody = await response.json();
 
