@@ -61,11 +61,9 @@ test('should be able to add a todo', async ({ page, request, context }) => {
   await expect(todoItem).toHaveText('playwright');
 });
 
-test('should be able to delete a todo', async ({ page ,request,context}) => {
-// Generate a unique email to avoid "already registered" errors
-// const uniqueEmail = `testuser${Date.now()}@test.com`;
-
-  await page.goto('/signup');
+test('should be able to delete a todo', async ({ page, request, context }) => {
+  // Generate a unique email to avoid "already registered" errors
+  // const uniqueEmail = `testuser${Date.now()}@test.com`;
 
   // await page.fill('[data-testid="first-name"]', faker.person.firstName());
   // await page.fill('[data-testid="last-name"]', faker.person.lastName());
@@ -108,6 +106,7 @@ test('should be able to delete a todo', async ({ page ,request,context}) => {
     },
   ]);
 
+  await page.goto('/todo');
   await page.click('[data-testid="add"]');
   await page.fill('[data-testid="new-todo"]', 'playwright');
   await page.click('[data-testid="submit-newTask"]');
