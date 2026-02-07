@@ -3,8 +3,8 @@ export default class User {
   private lastName: string;
   private email: string;
   private password: string;
-  // private access_token: string;
-  // private userID: string;
+  private access_token: string = '';
+  private userID: string = '';
 
   constructor(firstName: string, lastName: string, email: string, password: string) {
     this.firstName = firstName;
@@ -29,19 +29,19 @@ export default class User {
     return this.password;
   }
 
-  // getAccessToken(): string {
-  //   return this.access_token;
-  // }
+  getAccessToken(): string {
+    return this.access_token;
+  }
 
-  // getUserID(): string {
-  //   return this.userID;
-  // }
+  getUserID(): string {
+    return this.userID;
+  }
 
-  // setAccessToken(access_token: string): void {
-  //   this.access_token = access_token;
-  // }
+  setAccessToken(access_token: string) {
+    this.access_token = access_token;
+  }
 
-  // setUserID(userID: string): void {
-  //   this.userID = userID;
-  // }
+  setUserID(userID: string) {
+    this.userID = userID;
+  }
 }
