@@ -5,17 +5,22 @@ import UserApi from '../apis/UserApi';
 import TodoApi from '../apis/TodoApi';
 
 test('should be able to add a todo', async ({ page, request, context }) => {
+
+  //Create a new user
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
   //Register using API
   const response = await new UserApi(request).register(user);
 
+  //Extract the response body
   const responseBody = await response.json();
 
+  //Extract the access token, userID, and firstName from the response body
   const accessToken = responseBody.access_token;
   const userID = responseBody.userID;
   const firstName = responseBody.firstName;
 
+  //Add the cookies to the context
   await context.addCookies([
     {
       name: 'access_token',
@@ -34,8 +39,9 @@ test('should be able to add a todo', async ({ page, request, context }) => {
     },
   ]);
 
-  await page.goto('/todo');
-  await page.click('[data-testid="add"]');
+  // UI Steps
+  await page.goto('/todo/new');
+  // await page.click('[data-testid="add"]');
   await page.fill('[data-testid="new-todo"]', 'playwright');
   await page.click('[data-testid="submit-newTask"]');
 

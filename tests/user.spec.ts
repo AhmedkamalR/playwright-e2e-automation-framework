@@ -1,19 +1,15 @@
 import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import User from '../models/User';
+import RegisterPage from '../pages/RegisterPage';
 
 test('should be able to register to the todo website', async ({ page }) => {
-
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
-  await page.goto('/signup');
+  const registerPage = new RegisterPage(page);
 
-  await page.fill('[data-testid="first-name"]',user.getFirstName());
-  await page.fill('[data-testid="last-name"]', user.getLastName());
-  await page.fill('[data-testid="email"]', user.getEmail());
-  await page.fill('[data-testid="password"]', user.getPassword());
-  await page.fill('[data-testid="confirm-password"]', user.getPassword());
-  await page.click('[data-testid="submit"]');
+  await registerPage.load();
+  await registerPage.register(user);
 
   const welcomeMessage = page.locator('[data-testid="welcome"]');
 
