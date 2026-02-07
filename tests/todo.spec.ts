@@ -106,10 +106,21 @@ test('should be able to delete a todo', async ({ page, request, context }) => {
     },
   ]);
 
+  //Add Todo using the Api!
+  await request.post('/api/v1/tasks', {
+    data: {
+      item: 'playwright',
+      isCompleted: false,
+    },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
   await page.goto('/todo');
-  await page.click('[data-testid="add"]');
-  await page.fill('[data-testid="new-todo"]', 'playwright');
-  await page.click('[data-testid="submit-newTask"]');
+  // await page.click('[data-testid="add"]');
+  // await page.fill('[data-testid="new-todo"]', 'playwright');
+  // await page.click('[data-testid="submit-newTask"]');
   await page.click('[data-testid="delete"]');
 
   const notTodoMessage = page.locator('[data-testid="no-todos"]');
