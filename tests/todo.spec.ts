@@ -31,10 +31,11 @@ test('should be able to delete a todo', async ({ page, request, context }) => {
   //Add Todo using the Api!
   const newTodoPage = new NewTodoPage(page, request);
   await newTodoPage.addNewTaskUsingApi(user);
-  
-  await page.goto('/todo');
-  await page.click('[data-testid="delete"]');
 
-  const notTodoMessage = page.locator('[data-testid="no-todos"]');
+  const todoPage = new TodoPage(page);
+  await todoPage.load();
+  await todoPage.deleteTodoByIndex(0);
+
+  const notTodoMessage = todoPage.getNoTodoMessage();
   await expect(notTodoMessage).toBeVisible();
 });
