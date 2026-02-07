@@ -1,11 +1,17 @@
-import { Page } from '@playwright/test';
+import { APIRequestContext, BrowserContext, Page } from '@playwright/test';
 import User from '../models/User';
+import UserApi from '../apis/UserApi';
 
 export default class RegisterPage {
   private page: Page;
+  private request?: APIRequestContext;
+  private context?: BrowserContext;
+
   //constructor
-  constructor(page: Page) {
+  constructor(page: Page, request?: APIRequestContext, context?: BrowserContext) {
     this.page = page;
+    this.request = request;
+    this.context = context;
   }
   //Elements
   private get firstNameInput() {
@@ -44,5 +50,35 @@ export default class RegisterPage {
     await this.page.fill(this.passwordInput, user.getPassword());
     await this.page.fill(this.confirmPasswordInput, user.getPassword());
     await this.page.click(this.submitButton);
+  }
+
+  async registerUsingApi(user: User) {
+    const response = await new UserApi(this.request!).register(user);
+    const responseBody = await response.json();
+    const accessToken = responseBody.access_token;
+    const userID = responseBody.userID;
+    const firstName = responseBody.firstName;
+
+    // Update user object with tokens for API calls
+    user.setAccessToken(accessToken);
+    user.setUserID(userID);
+
+    await this.context!.addCookies([
+      {
+        name: 'access_token',
+        value: accessToken,
+        url: 'https://todo.qacart.com/',
+      },
+      {
+        name: 'firstName',
+        value: firstName,
+        url: 'https://todo.qacart.com/',
+      },
+      {
+        name: 'userID',
+        value: userID,
+        url: 'https://todo.qacart.com/',
+      },
+    ]);
   }
 }

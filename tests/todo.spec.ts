@@ -3,41 +3,14 @@ import { faker } from '@faker-js/faker';
 import User from '../models/User';
 import UserApi from '../apis/UserApi';
 import TodoApi from '../apis/TodoApi';
+import RegisterPage from '../pages/RegisterPage';
 
 test('should be able to add a todo', async ({ page, request, context }) => {
-
   //Create a new user
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
-  //Register using API
-  const response = await new UserApi(request).register(user);
-
-  //Extract the response body
-  const responseBody = await response.json();
-
-  //Extract the access token, userID, and firstName from the response body
-  const accessToken = responseBody.access_token;
-  const userID = responseBody.userID;
-  const firstName = responseBody.firstName;
-
-  //Add the cookies to the context
-  await context.addCookies([
-    {
-      name: 'access_token',
-      value: accessToken,
-      url: 'https://todo.qacart.com/',
-    },
-    {
-      name: 'firstName',
-      value: firstName,
-      url: 'https://todo.qacart.com/',
-    },
-    {
-      name: 'userID',
-      value: userID,
-      url: 'https://todo.qacart.com/',
-    },
-  ]);
+  const registerPage = new RegisterPage(page, request, context);
+  await registerPage.registerUsingApi(user);
 
   // UI Steps
   await page.goto('/todo/new');
@@ -52,40 +25,11 @@ test('should be able to add a todo', async ({ page, request, context }) => {
 test('should be able to delete a todo', async ({ page, request, context }) => {
   const user = new User(faker.person.firstName(), faker.person.lastName(), faker.internet.email(), 'Test@1234');
 
-  const response = await new UserApi(request).register(user);
-
-
-  const responseBody = await response.json();
-
-  const accessToken = responseBody.access_token;
-  const userID = responseBody.userID;
-  const firstName = responseBody.firstName;
-
-  user.setAccessToken(accessToken);
-  user.setUserID(userID);
-
-  await context.addCookies([
-    {
-      name: 'access_token',
-      value: accessToken,
-      url: 'https://todo.qacart.com/',
-    },
-    {
-      name: 'firstName',
-      value: firstName,
-      url: 'https://todo.qacart.com/',
-    },
-    {
-      name: 'userID',
-      value: userID,
-      url: 'https://todo.qacart.com/',
-    },
-  ]);
+  const registerPage = new RegisterPage(page, request, context);
+  await registerPage.registerUsingApi(user);
 
   //Add Todo using the Api!
-
   await new TodoApi(request).addTodo(user);
- 
 
   await page.goto('/todo');
   await page.click('[data-testid="delete"]');
