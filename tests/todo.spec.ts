@@ -4,6 +4,7 @@ import User from '../models/User';
 import UserApi from '../apis/UserApi';
 import TodoApi from '../apis/TodoApi';
 import RegisterPage from '../pages/RegisterPage';
+import NewTodoPage from '../pages/NewTodoPage';
 
 test('should be able to add a todo', async ({ page, request, context }) => {
   //Create a new user
@@ -13,10 +14,10 @@ test('should be able to add a todo', async ({ page, request, context }) => {
   await registerPage.registerUsingApi(user);
 
   // UI Steps
-  await page.goto('/todo/new');
-  // await page.click('[data-testid="add"]');
-  await page.fill('[data-testid="new-todo"]', 'playwright');
-  await page.click('[data-testid="submit-newTask"]');
+  const newTodoPage = new NewTodoPage(page);
+  await newTodoPage.load();
+
+  await newTodoPage.addNewTask('playwright');
 
   const todoItem = page.locator('[data-testid="todo-item"]').nth(0);
   await expect(todoItem).toHaveText('playwright');
